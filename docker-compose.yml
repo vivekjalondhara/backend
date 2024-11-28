@@ -1,0 +1,21 @@
+version: "3.8"
+name: task # Optional, this is the project name
+
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:6.0
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db # MongoDB's data directory is mapped to the volume
+    networks:
+      - task # Reference the task network
+
+volumes:
+  mongo-data: # Define the named volume here
+    driver: local # Explicitly set the volume driver (optional, 'local' is the default)
+
+networks:
+  task:
+    driver: bridge # Define the 'task' network
