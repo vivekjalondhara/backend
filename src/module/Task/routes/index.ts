@@ -19,7 +19,7 @@ const taskRoute = () => {
   );
   router.get("/get", authMiddleware, getAllTask);
 
-  router.post(
+  router.delete(
     "/delete/:taskId",
     authMiddleware,
     validationMiddleware(deleteTaskSchema, "params"),

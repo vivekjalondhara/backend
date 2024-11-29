@@ -61,8 +61,22 @@ export const getAllTask = async (
 ): Promise<void | any> => {
   try {
     const { userId } = req.TokenData;
-    console.log({ userId });
-    const allTask = await Task.find({ createdBy: userId });
+
+    const { search } = req.query;
+    let query: any = { createdBy: userId };
+
+    if (search) {
+      query = {
+        ...query,
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { description: { $regex: search, $options: "i" } },
+          { status: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+
+    const allTask = await Task.find(query);
 
     return generalResponse(
       res,

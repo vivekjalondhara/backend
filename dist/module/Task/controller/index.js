@@ -43,7 +43,6 @@ exports.createTask = createTask;
 const getAllTask = async (req, res, next) => {
     try {
         const { userId } = req.TokenData;
-        console.log({ userId });
         const allTask = await taskboard_model_1.default.find({ createdBy: userId });
         return (0, general_response_1.generalResponse)(res, allTask, "Tasks fetched successfully", "success", true, 200);
     }
