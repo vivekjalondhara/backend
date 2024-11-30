@@ -7,48 +7,58 @@ export const createTask = async (
   res: Response,
   next: NextFunction
 ): Promise<void | any> => {
-  const { title, description, status, id } = req.body;
+  const { title, description, status } = req.body;
   const { userId } = req.TokenData;
 
   try {
-    if (id) {
-      const task = await Task.findById(id);
-      if (!task) {
-        return res.status(404).json({ message: "Task not found" });
-      }
+    const task = new Task({
+      title,
+      description,
+      status,
+      createdBy: userId,
+      updatedBy: userId,
+    });
+    task.save();
+    return generalResponse(
+      res,
+      task,
+      "Task create successfully",
+      "success",
+      true,
+      201
+    );
+  } catch (err) {
+    return next(err);
+  }
+};
 
-      task.title = title || task.title;
-      task.description = description || task.description;
-      task.status = status || task.status;
-      task.updatedBy = task.updatedBy;
-      task.updatedAt = new Date();
-      await task.save();
-      return generalResponse(
-        res,
-        task,
-        "Task update successfully",
-        "success",
-        true,
-        200
-      );
-    } else {
-      const task = new Task({
-        title,
-        description,
-        status,
-        createdBy: userId,
-        updatedBy: userId,
-      });
-      task.save();
-      return generalResponse(
-        res,
-        task,
-        "Task create successfully",
-        "success",
-        true,
-        201
-      );
+export const updateTask = async (
+  req: Request | any,
+  res: Response,
+  next: NextFunction
+): Promise<void | any> => {
+  const { title, description, status, id } = req.body;
+
+  try {
+    const task = await Task.findById(id);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
     }
+
+    task.title = title || task.title;
+    task.description = description || task.description;
+    task.status = status || task.status;
+    task.updatedBy = task.updatedBy;
+    task.updatedAt = new Date();
+    await task.save();
+    return generalResponse(
+      res,
+      task,
+      "Task update successfully",
+      "success",
+      true,
+      200
+    );
   } catch (err) {
     return next(err);
   }

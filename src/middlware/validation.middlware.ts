@@ -51,9 +51,7 @@ export const cleanObj = (obj: { [key: string]: any }) => {
       if (!isNumeric(obj[key])) {
         obj[key] = JSON.parse(obj[key]);
       }
-    } catch (err) {
-      // do nothing
-    }
+    } catch (err) {}
   });
   return obj;
 };
@@ -66,7 +64,7 @@ export const validationMiddleware = (
     try {
       cleanObj(req[value]);
       req[value] = await type.validateAsync(req[value]);
-      return next(); // Proceed to the next middleware
+      return next();
     } catch (e) {
       const error: any = e;
       const errorObj: { [key: string]: string } = {};
